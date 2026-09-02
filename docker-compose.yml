@@ -1,0 +1,247 @@
+# services = daftar aplikasi/container yang ingin kita jalankan.
+#
+# Di contoh ini kita mempunyai 2 service:
+# 1. app = Laravel
+# 2. db  = PostgreSQL
+#
+# Cara membacanya:
+#
+# services
+#   ├── app
+#   └── db
+#
+# Artinya Docker Compose akan mengatur 2 container.
+services:
+
+# =====================================================
+  # SERVICE 1: app
+  # =====================================================
+  #
+  # "app" adalah nama service untuk aplikasi Laravel kita.
+  #
+  # Kita bebas memberikan nama ini.
+  # Misalnya bisa saja dinamakan:
+  #   laravel:
+  #
+  # Tetapi kita menggunakan "app".
+  app:
+  # buid berarti:
+  # "Docker, buat container ini berdasarkan Dockerfile."
+    build: 
+    # context: .
+    #
+    # Titik "." berarti folder saat ini.
+    #
+    # Jadi Docker akan menggunakan folder project Laravel
+    # sebagai sumber untuk proses build.
+    #
+    # Misalnya kita berada di:
+    #
+    # percobaan/
+    #
+    # maka "." berarti:
+    #
+    # percobaan/
+      context: .
+      # Beritahu Docker bahwa file yang digunakan untuk
+      # membuat image adalah file bernama Dockerfile.
+      #
+      # Jadi Docker akan mencari:
+      #
+      # percobaan/Dockerfile
+      dockerfile: Dockerfile
+    
+    # =====================================================
+    # PORT
+    # =====================================================
+    #
+    # Menghubungkan port komputer kita dengan port
+    # yang digunakan Laravel di dalam container.
+    #
+    # Format:
+    #
+    # "PORT_KOMPUTER:PORT_CONTAINER"
+    #
+    # Jadi:
+    #
+    # "8000:8000"
+    #
+    # artinya:
+    #
+    # localhost:8000
+    #       ↓
+    #    Docker
+    #       ↓
+    # container:8000
+    #
+    # Sehingga kita bisa membuka Laravel melalui:
+    #
+    # http://localhost:8000
+    ports:
+      - "8000:8000"
+
+    # =====================================================
+    # VOLUMES
+    # =====================================================
+    #
+    # Volume digunakan untuk menghubungkan folder project
+    # di komputer kita dengan folder di dalam container.
+    #
+    # Format:
+    #
+    # "FOLDER_KOMPUTER:FOLDER_CONTAINER"
+    #
+    # "."      = folder project Laravel di komputer
+    # "/var/www" = folder project Laravel di container
+    #
+    # Jadi:
+    #
+    # komputer
+    #    ./ 
+    #     │
+    #     │ terhubung
+    #     ▼
+    # container
+    #    /var/www
+    #
+    # Keuntungannya:
+    #
+    # Kalau kamu mengubah:
+    #
+    # routes/web.php
+    #
+    # perubahan tersebut langsung terlihat oleh
+    # Laravel di dalam container.
+    volumes:
+      - .:/var/www
+    
+    # =====================================================
+    # DEPENDS_ON
+    # =====================================================
+    #
+    # Laravel membutuhkan database PostgreSQL.
+    #
+    # "depends_on" memberitahu Docker Compose bahwa
+    # service "app" bergantung pada service "db".
+    #
+    # Jadi hubungan sederhananya:
+    #
+    # app (Laravel)
+    #       ↓
+    #      db
+    #  (PostgreSQL)
+    #
+    depends_on:
+      - db
+
+  # =====================================================
+  # SERVICE 2: db
+  # =====================================================
+  #
+  # "db" adalah nama service untuk PostgreSQL.
+  #
+  # Laravel akan menggunakan service ini sebagai database.    
+  db:
+    # =====================================================
+    # IMAGE
+    # =====================================================
+    #
+    # Berbeda dengan "app" yang menggunakan:
+    #
+    # build:
+    #
+    # PostgreSQL di sini menggunakan image yang sudah
+    # tersedia.
+    #
+    # postgres:16
+    #
+    # artinya:
+    #
+    # gunakan image PostgreSQL versi 16.
+    image: postgres:16
+
+    # =====================================================
+    # ENVIRONMENT
+    # =====================================================
+    #
+    # environment digunakan untuk memberikan konfigurasi
+    # kepada PostgreSQL ketika container pertama kali dibuat.
+    environment:
+      # Nama database yang akan dibuat.
+      #
+      # Jadi PostgreSQL akan memiliki database:
+      #
+      # percobaan
+      POSTGRES_DB: mencoba
+      # Username PostgreSQL.
+      #
+      # Laravel nantinya akan menggunakan username:
+      #
+      # postgres
+      POSTGRES_USER: postgres
+      # Password username PostgreSQL.
+      #
+      # Dalam contoh ini password-nya:
+      #
+      # password
+      #
+      # Untuk production sebaiknya jangan menggunakan
+      # password sederhana seperti ini.
+      POSTGRES_PASSWORD: zeronime09
+
+    # =====================================================
+    # PORT POSTGRESQL
+    # =====================================================
+    #
+    # Format:
+    #
+    # "PORT_KOMPUTER:PORT_CONTAINER"
+    #
+    # PostgreSQL secara default menggunakan port 5432.
+    #
+    # Jadi:
+    #
+    # komputer:5432
+    #      ↓
+    # container:5432
+    #
+    ports:
+      - "5432:5432"
+    
+    # =====================================================
+    # VOLUME DATABASE
+    # =====================================================
+    #
+    # PostgreSQL menyimpan data di dalam:
+    #
+    # /var/lib/postgresql/data
+    #
+    # Kita menghubungkannya dengan volume Docker
+    # bernama:
+    #
+    # postgres_data
+    #
+    # Tujuannya agar data database tidak hilang ketika
+    # container dihapus/dibuat ulang.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# =========================================================
+# VOLUME GLOBAL
+# =========================================================
+#
+# Di atas kita menggunakan:
+#
+# postgres_data
+#
+# Sekarang kita mendeklarasikan volume tersebut kepada
+# Docker Compose.
+#
+# Jadi:
+#
+# postgres_data
+#      ↓
+# penyimpanan data PostgreSQL
+#
+volumes:
+  postgres_data:

@@ -26,6 +26,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # dependency Composer belum berubah.
 COPY composer.json composer.lock ./
 
+# menyalin source code laravel dari komputer ke dalam container
+COPY . .
+
 # Menginstall dependency Laravel menggunakan Composer.
 # --no-interaction = tidak meminta input dari user.
 # --prefer-dist = mengambil package dalam bentuk distribution.
@@ -34,9 +37,6 @@ RUN composer install \
     --no-interaction \
     --prefer-dist \
     --optimize-autoloader
-
-# menyalin source code laravel dari komputer ke dalam container
-COPY . .
 
 # Memberikan permission pada folder storage dan bootstrap/cache.
 # Laravel membutuhkan folder tersebut untuk menulis cache,
@@ -49,4 +49,4 @@ EXPOSE 8000
 # Perintah yang otomatis dijalankan ketika container dimulai.
 # Laravel dijalankan pada semua network interface
 # sehingga dapat diakses dari luar container.
-CMD [ "php", "artisan", "serve", "--host=[0.0.0.0]", "--port=8000"]
+CMD [ "php", "artisan", "serve", "--port=8000"]
