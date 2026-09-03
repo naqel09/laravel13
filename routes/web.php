@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
- 
+use App\Http\Controllers\PostController;
+
+
 Route::view('/', 'home',[
     'title'=>'home'
 ])->name('home');
@@ -15,10 +17,9 @@ Route::get('/about', function () {
 );
 })->name('about');
 
-Route::get('/posts', function () {
-    return view('posts',
-    [
-        'title'=>'posts'
-    ]
-);
-})->name('posts');
+
+
+Route::get('/posts', [PostController::class, 'index']);
+
+// detail postingan
+Route::get('/posts/{slug}', [PostController::class, 'show'])->name('detail_post');
