@@ -1,4 +1,18 @@
 @extends('layouts.main')
+
 @section('container')
-    <h1>halaman posts</h1>
+<h1>halaman blog posts</h1>
+
+@foreach ($posts as $post)
+
+<article>
+    <h2>
+        <a href="/posts/{{ $post->slug }}">{{ $post->title }}</a>
+    </h2>
+    <h5>by: {{ $post->author }}</h5>
+    <p>{{ $post->content }}</p>
+</article>
+
+@endforeach
+
 @endsection

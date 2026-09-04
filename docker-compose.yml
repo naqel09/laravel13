@@ -51,6 +51,8 @@ services:
       # percobaan/Dockerfile
       dockerfile: Dockerfile
     
+    container_name: app
+    
     # =====================================================
     # PORT
     # =====================================================
@@ -188,6 +190,8 @@ services:
       # Untuk production sebaiknya jangan menggunakan
       # password sederhana seperti ini.
       POSTGRES_PASSWORD: zeronime09
+    
+    container_name: postgres
 
     # =====================================================
     # PORT POSTGRESQL

@@ -49,4 +49,4 @@ EXPOSE 8000
 # Perintah yang otomatis dijalankan ketika container dimulai.
 # Laravel dijalankan pada semua network interface
 # sehingga dapat diakses dari luar container.
-CMD [ "php", "artisan", "serve", "--port=8000"]
+CMD [ "php", "artisan", "serve","--host=[0.0.0.0]", "--port=8000"]
