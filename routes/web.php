@@ -22,4 +22,4 @@ Route::get('/about', function () {
 Route::get('/posts', [PostController::class, 'index']);
 
 // detail postingan
-Route::get('/posts/{slug}', [PostController::class, 'show'])->name('detail_post');
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('detail_post');
