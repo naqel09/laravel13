@@ -4,8 +4,8 @@
 @section('container')
 <article>
     <h2>judul</h2>
-    <h5>penulis</h5>
-    {{$post->content}}
+    <p>By. Andry Septian Syahputra Tumaruk in programming</p>
+    {!! $post->content !!}
 
     <a href="/posts">kembali</a>
 </article>

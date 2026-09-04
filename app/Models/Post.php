@@ -14,4 +14,9 @@ class Post extends Model
         'title',
         'content'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
