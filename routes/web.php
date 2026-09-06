@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
+use App\Models\Post;
+use App\Models\Category;
 
 
 Route::view('/', 'home',[
@@ -23,3 +26,8 @@ Route::get('/posts', [PostController::class, 'index']);
 
 // detail postingan
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('detail_post');
+Route::get('/author/{author:username}',[PostController::class, 'author'])->name('author');
+
+// category
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('category');
