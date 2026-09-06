@@ -11,8 +11,8 @@ class PostController extends Controller
     public function index()
     {
         return view('posts', [
-            'title' => 'posts',
-            'posts' => Post::latest()->get()
+            'title' => 'all post',
+            'posts' => Post::with(['author','category'])->latest()->get()
         ]);
     }
 
@@ -28,8 +28,8 @@ class PostController extends Controller
     public function author(User $author)
     {
         return view('posts', [
-            'title' => "author",
-            'posts' => $author->posts,
+            'title' => "post by Author: $author->name",
+            'posts' => $author->posts->load(['author','category']),
         ]);
     }
 }
