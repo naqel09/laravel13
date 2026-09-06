@@ -3,11 +3,11 @@
 
 @section('container')
 <article>
-    <h2>judul</h2>
-    <p>By. Andry Septian Syahputra Tumaruk in programming</p>
+    <h2>{{ $post->title }}</h2>
+    <p>By. {{ $post->author->name }} in {{ $post->category->name }}</p>
     {!! $post->content !!}
 
-    <a href="/posts">kembali</a>
+    <a href="/posts" class="d-block mt-3">kembali</a>
 </article>
     
     

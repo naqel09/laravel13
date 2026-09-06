@@ -11,6 +11,7 @@ class Post extends Model
     protected $fillable = [
         'slug',
         'author',
+        'excerpt',
         'title',
         'content'
     ];
@@ -18,5 +19,9 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function author(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
