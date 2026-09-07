@@ -8,13 +8,16 @@ use App\Models\Category;
 
 
 Route::view('/', 'home',[
-    'title'=>'home'
+    'title'=>'home',
+    'active'=>'home',
+
 ])->name('home');
 
 Route::get('/about', function () {
     return view('about',
     [
         'name'=>'andry',
+        'active'=>'about',
         'title'=>'about',
     ]
 );
