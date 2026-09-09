@@ -8,12 +8,12 @@ use App\Models\User;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return view('posts', [
             'title' => 'all post',
             'active'=>'posts',
-            'posts' => Post::latest()->get()
+            'posts' => Post::latest()->filter($request->only(['search', 'category']))->paginate(7)->withQueryString()
         ]);
     }
 
