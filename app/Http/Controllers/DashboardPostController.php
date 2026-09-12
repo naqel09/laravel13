@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DashboardPostController extends Controller
 {
@@ -22,7 +24,9 @@ class DashboardPostController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.posts.create', [
+            'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -30,7 +34,22 @@ class DashboardPostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate(
+            [
+                'title'=> 'required|max:255',
+                'slug'=> 'required| unique:posts',
+                'category_id'=> 'required',
+                'excerpt'=> 'required',
+                'content'=>'required'
+            ]
+            );
+
+        $validateData['user_id'] = auth()->user()->id;
+        $validateData['excerpt'] = Str::limit(strip_tags($request->content), 200);
+
+        Post::create($validateData);
+
+        return redirect('/dashboard/posts')->with('success', 'Post berhasil ditambahkan!');
     }
 
     /**
@@ -48,7 +67,10 @@ class DashboardPostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('dashboard.posts.edit', [
+            'post' => $post,
+            'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -56,7 +78,27 @@ class DashboardPostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $rule = 
+            [
+                'title'=> 'required|max:255',
+                'category_id'=> 'required',
+                'excerpt'=> 'required',
+                'content'=>'required'
+            ];
+        
+            if($request->slug != $post->slug){
+                $rule['slug'] = 'required| unique:posts';
+            }
+            $validData = $request->validate($rule);
+
+            $validData['user_id'] = auth()->user()->id;
+            $validData['excerpt'] = Str::limit(strip_tags($request->content), 200);
+
+            Post::where('id', $post->id)->update($validData);
+
+            return redirect('/dashboard/posts')->with('success', 'data telah di updated');
+
+            
     }
 
     /**
@@ -64,6 +106,8 @@ class DashboardPostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        Post::destroy($post->id);
+
+        return redirect('/dashboard/posts')->with('success', 'Post berhasil dihapus!');
     }
 }

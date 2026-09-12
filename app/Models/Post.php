@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Attributes\RouteKey;
 class Post extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'slug',
-        'author',
-        'excerpt',
-        'title',
-        'content'
-    ];
+    protected $guarded = ['id'];
+    // protected $fillable = [
+    //     'slug',
+    //     'author',
+    //     'excerpt',
+    //     'title',
+    //     'content'
+    // ];
     protected $with=['category', 'author'];
 
     public function scopeFilter($query, array $filters){
@@ -28,6 +29,12 @@ class Post extends Model
         $query->when($filters['category']?? false, function($query, $category){
             return $query->whereHas('category', function($query) use($category){
                 $query->where('slug',$category);
+            });
+        });
+
+        $query->when($filters['author'] ?? false, function($query, $author){
+            return $query->whereHas('author', function($query) use($author){
+                $query->where('username', $author);
             });
         });
     }
