@@ -31,18 +31,19 @@
         </a>
 
         <a href="/dashboard/posts"
-            class="d-flex align-items-center gap-3 rounded-3 px-3 py-2 mb-1 {{ Request::is('dashboard/posts')? 'text-danger': 'text-secondary' }} fw-medium text-decoration-none"
+            class="d-flex align-items-center gap-3 rounded-3 px-3 py-2 mb-1 {{ Request::is('dashboard/posts*')? 'text-danger': 'text-secondary' }} fw-medium text-decoration-none"
             style="font-size:14px">
             <i class="bi bi-file-earmark-richtext" style="width:20px;text-align:center"></i>
             <span>Posts</span>
         </a>
-
-        <a href="/categories"
-            class="d-flex align-items-center gap-3 rounded-3 px-3 py-2 mb-1 {{ Request::is('dashboard/categories')? 'text-white': 'text-secondary' }} fw-medium text-decoration-none"
+        @can('admin')
+        <a href="/dashboard/categories"
+            class="d-flex align-items-center gap-3 rounded-3 px-3 py-2 mb-1 {{ Request::is('dashboard/categories*')? 'text-white': 'text-secondary' }} fw-medium text-decoration-none"
             style="font-size:14px">
             <i class="bi bi-tags-fill" style="width:20px;text-align:center"></i>
             <span>Categories</span>
         </a>
+        @endcan
 
         <p class="text-secondary text-uppercase fw-semibold mt-3 mb-2 px-2"
             style="font-size:10px;letter-spacing:1px">Pages</p>
