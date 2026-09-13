@@ -19,7 +19,14 @@
 
 @if ($posts->count())
 <div class="card mb-3">
-    <img src="https://media.istockphoto.com/id/2161298305/id/foto/latar-belakang-teknologi-big-data.jpg?s=612x612&w=0&k=20&c=7AUUOSMladSqcksB36NHRjyQENdnSpPyEhRYKhYBTA4=" class="card-img-top" alt="...">
+    @if ($posts[0]->image)
+    <div style="max-height:350px;overflow:hidden;">
+
+        <img src="{{ asset('storage/'.$posts[0]->image) }}" class="card-img-top" alt="...">
+    </div>
+    @else
+    <img src="https://images.unsplash.com/photo-1638602612226-55fd638475c9?q=80&w=875&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="...">
+    @endif
     <div class="card-body text-center">
         <h3 class="card-title">
             <a href="/posts/{{ $posts[0]->slug }}" class="text-decoration-none text-dark">{{ $posts[0]->title }}</a>
@@ -46,7 +53,11 @@
                 <div class="position-absolute px-3 py-2 text-white" style="background-color:rgba(0, 0, 0, 0.7)">
                     <a href="/posts?category={{ $post->category->slug }}" class="text-decoration-none text-white">{{ $post->category->name }}</a>
                 </div>
+                @if ($post->image)
+                <img src="{{ asset('storage/'. $post->image) }}" class="card-img-top" alt="...">
+                @else
                 <img src="https://images.unsplash.com/photo-1638602612226-55fd638475c9?q=80&w=875&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="...">
+                @endif
                 <div class="card-body">
                     <h5 class="card-title">{{ $post->title }}</h5>
                     <p>

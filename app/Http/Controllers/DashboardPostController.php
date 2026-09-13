@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardPostController extends Controller
 {
@@ -36,13 +37,18 @@ class DashboardPostController extends Controller
     {
         $validateData = $request->validate(
             [
-                'title'=> 'required|max:255',
-                'slug'=> 'required| unique:posts',
-                'category_id'=> 'required',
-                'excerpt'=> 'required',
-                'content'=>'required'
+                'title' => 'required|max:255',
+                'slug' => 'required| unique:posts',
+                'category_id' => 'required',
+                'image' => 'image|file|max:1024',
+                'excerpt' => 'required',
+                'content' => 'required'
             ]
-            );
+        );
+
+        if ($request->file('image')) {
+            $validateData['image'] = $request->file('image')->store('post-images');
+        }
 
         $validateData['user_id'] = auth()->user()->id;
         $validateData['excerpt'] = Str::limit(strip_tags($request->content), 200);
@@ -78,27 +84,33 @@ class DashboardPostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $rule = 
+        $rule =
             [
-                'title'=> 'required|max:255',
-                'category_id'=> 'required',
-                'excerpt'=> 'required',
-                'content'=>'required'
+                'title' => 'required|max:255',
+                'category_id' => 'required',
+                'image' => 'image|file|max:1024',
+                'excerpt' => 'required',
+                'content' => 'required'
             ];
-        
-            if($request->slug != $post->slug){
-                $rule['slug'] = 'required| unique:posts';
+
+        if ($request->slug != $post->slug) {
+            $rule['slug'] = 'required| unique:posts';
+        }
+        $validData = $request->validate($rule);
+
+        if ($request->file('image')) {
+            if ($request->oldImage) {
+                Storage::delete($request->oldImage);
             }
-            $validData = $request->validate($rule);
+            $validData['image'] = $request->file('image')->store('post-images');
+        }
 
-            $validData['user_id'] = auth()->user()->id;
-            $validData['excerpt'] = Str::limit(strip_tags($request->content), 200);
+        $validData['user_id'] = auth()->user()->id;
+        $validData['excerpt'] = Str::limit(strip_tags($request->content), 200);
 
-            Post::where('id', $post->id)->update($validData);
+        Post::where('id', $post->id)->update($validData);
 
-            return redirect('/dashboard/posts')->with('success', 'data telah di updated');
-
-            
+        return redirect('/dashboard/posts')->with('success', 'data telah di updated');
     }
 
     /**
@@ -106,6 +118,9 @@ class DashboardPostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->image) {
+            Storage::delete($post->image);
+        }
         Post::destroy($post->id);
 
         return redirect('/dashboard/posts')->with('success', 'Post berhasil dihapus!');

@@ -24,10 +24,17 @@
 
                 {{-- Gambar Post --}}
                 <div style="height:320px; overflow:hidden;">
+                    @if($post->image)
+                    <img src="{{ asset('storage/' . $post->image) }}"
+                         alt="Cover {{ $post->title }}"
+                         class="w-100 h-100"
+                         style="object-fit:cover;">
+                    @else
                     <img src="https://images.unsplash.com/photo-1638602612226-55fd638475c9?q=80&w=900&auto=format&fit=crop"
                          alt="Cover {{ $post->title }}"
                          class="w-100 h-100"
                          style="object-fit:cover;">
+                    @endif
                 </div>
 
                 <div class="card-body px-4 px-md-5 py-4">
